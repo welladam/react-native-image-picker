@@ -228,6 +228,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
     if (!permissionsCheck(currentActivity, callback, REQUEST_PERMISSIONS_FOR_CAMERA))
     {
+      responseHelper.invokeError(callback, "Permissions weren't granted");
       return;
     }
 
@@ -316,6 +317,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
     if (!permissionsCheck(currentActivity, callback, REQUEST_PERMISSIONS_FOR_LIBRARY))
     {
+      responseHelper.invokeError(callback, "Permissions weren't granted");
       return;
     }
 
