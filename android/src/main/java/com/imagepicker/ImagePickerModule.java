@@ -103,7 +103,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
       if (!permissionsGranted)
       {
-        responseHelper.invokeError(callback, "Permissions weren't granted");
+        responseHelper.invokeError(callback, "Para continuar, por favor habilite as permissões para este aplicativo nas configurações de seu celular!");
         return false;
       }
 
@@ -143,7 +143,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
     if (currentActivity == null)
     {
-      responseHelper.invokeError(callback, "can't find current Activity");
+      responseHelper.invokeError(callback, "Não foi possível continuar! Tente novamente ou entre em contato com a Vialaser!");
       return;
     }
 
@@ -213,14 +213,14 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
   {
     if (!isCameraAvailable())
     {
-      responseHelper.invokeError(callback, "Camera not available");
+      responseHelper.invokeError(callback, "Câmera não está disponível para ser utilizada!");
       return;
     }
 
     final Activity currentActivity = getCurrentActivity();
     if (currentActivity == null)
     {
-      responseHelper.invokeError(callback, "can't find current Activity");
+      responseHelper.invokeError(callback, "Não foi possível continuar! Tente novamente ou entre em contato com a Vialaser!");
       return;
     }
 
@@ -228,7 +228,12 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
     if (!permissionsCheck(currentActivity, callback, REQUEST_PERMISSIONS_FOR_CAMERA))
     {
-      responseHelper.invokeError(callback, "Permissions weren't granted");
+        final Boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(currentActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) && ActivityCompat.shouldShowRequestPermissionRationale(currentActivity, Manifest.permission.CAMERA);
+
+        if (shouldShowRequestPermissionRationale) {
+            responseHelper.invokeError(callback, "Para continuar, por favor habilite as permissões para este aplicativo nas configurações de seu celular!");
+        }
+
       return;
     }
 
@@ -258,12 +263,12 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
       if (imageConfig.original != null) {
         cameraCaptureURI = RealPathUtil.compatUriFromFile(reactContext, imageConfig.original);
       }else {
-        responseHelper.invokeError(callback, "Couldn't get file path for photo");
+        responseHelper.invokeError(callback, "Não foi possível encontrar o caminho da foto escolhida!");
         return;
       }
       if (cameraCaptureURI == null)
       {
-        responseHelper.invokeError(callback, "Couldn't get file path for photo");
+        responseHelper.invokeError(callback, "Não foi possível encontrar o caminho da foto escolhida!");
         return;
       }
       cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI);
@@ -271,7 +276,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
     if (cameraIntent.resolveActivity(reactContext.getPackageManager()) == null)
     {
-      responseHelper.invokeError(callback, "Cannot launch camera");
+      responseHelper.invokeError(callback, "Não foi possível inicializar a câmera!");
       return;
     }
 
@@ -295,7 +300,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     catch (ActivityNotFoundException e)
     {
       e.printStackTrace();
-      responseHelper.invokeError(callback, "Cannot launch camera");
+      responseHelper.invokeError(callback, "Não foi possível inicializar a câmera!");
     }
   }
 
@@ -309,7 +314,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
   {
     final Activity currentActivity = getCurrentActivity();
     if (currentActivity == null) {
-      responseHelper.invokeError(callback, "can't find current Activity");
+      responseHelper.invokeError(callback, "Não foi possível continuar! Tente novamente ou entre em contato com a Vialaser!");
       return;
     }
 
@@ -317,7 +322,12 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
     if (!permissionsCheck(currentActivity, callback, REQUEST_PERMISSIONS_FOR_LIBRARY))
     {
-      responseHelper.invokeError(callback, "Permissions weren't granted");
+        final Boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(currentActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) && ActivityCompat.shouldShowRequestPermissionRationale(currentActivity, Manifest.permission.CAMERA);
+
+        if (shouldShowRequestPermissionRationale) {
+            responseHelper.invokeError(callback, "Para continuar, por favor habilite as permissões para este aplicativo nas configurações de seu celular!");
+        }
+
       return;
     }
 
@@ -340,7 +350,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
     if (libraryIntent.resolveActivity(reactContext.getPackageManager()) == null)
     {
-      responseHelper.invokeError(callback, "Cannot launch photo library");
+      responseHelper.invokeError(callback, "Não foi possível inicializar a galeria de fotos!");
       return;
     }
 
@@ -353,7 +363,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     catch (ActivityNotFoundException e)
     {
       e.printStackTrace();
-      responseHelper.invokeError(callback, "Cannot launch photo library");
+      responseHelper.invokeError(callback, "Não foi possível inicializar a galeria de fotos!");
     }
   }
 
@@ -399,7 +409,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
           catch (Exception e)
           {
             // image not in cache
-            responseHelper.putString("error", "Could not read photo");
+            responseHelper.putString("error", "Não foi possível ler a foto selecionada!");
             responseHelper.putString("uri", uri.toString());
             responseHelper.invokeResponse(callback);
             callback = null;
@@ -456,7 +466,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
       if (imageConfig.resized == null)
       {
         removeUselessFiles(requestCode, imageConfig);
-        responseHelper.putString("error", "Can't resize the image");
+        responseHelper.putString("error", "Não foi possível redimensionar a foto selecionada!");
       }
       else
       {
@@ -483,7 +493,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
       else
       {
         removeUselessFiles(requestCode, imageConfig);
-        final String errorMessage = new StringBuilder("Error moving image to camera roll: ")
+        final String errorMessage = new StringBuilder("Aconteceu um problema ao tentar enviar a foto para a galeria: ")
                 .append(rolloutResult.error.getMessage()).toString();
         responseHelper.putString("error", errorMessage);
         return;
